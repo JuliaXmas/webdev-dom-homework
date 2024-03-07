@@ -1,10 +1,9 @@
-"use strict";
+import { sanitizeHtml } from './sanitizeHtml.js';
 
 const inputName = document.querySelector('.add-form-name');
 const inputText = document.querySelector('.add-form-text');
 const buttonWrite = document.querySelector('.add-form-button');
 const commentList = document.querySelector('.comments');
-const currentDate = new Date().toLocaleDateString('default', { day: '2-digit', month: '2-digit', year: '2-digit' }) + " " + new Date().toLocaleTimeString().slice(0, -3);
 const preloader = document.querySelector('.preloader');
 const addForm = document.querySelector('.add-form');
 
@@ -71,12 +70,12 @@ const renderComments = () => {
   commentList.innerHTML = comments.map((comment, index) => {
     return `<li class="comment" data-index="${index}">
   <div class="comment-header">
-    <div>${comment.name}</div>
+    <div>${sanitizeHtml(comment.name)}</div>
     <div>${comment.date},</div>
   </div>
     <div class="comment-body">
     <div class="comment-text">
-    ${comment.text.replaceAll("%BEGIN_QUOTE", "<div class='quote'>").replaceAll("END_QUOTE%", "</div>")}
+    ${sanitizeHtml(comment.text).replaceAll("%BEGIN_QUOTE", "<div class='quote'>").replaceAll("END_QUOTE%", "</div>")}
     </div>
   </div>
   <div class="comment-footer">
