@@ -1,4 +1,5 @@
 import { sanitizeHtml } from './sanitizeHtml.js';
+import { getComments } from './api.js';
 
 const inputName = document.querySelector('.add-form-name');
 const inputText = document.querySelector('.add-form-text');
@@ -9,15 +10,7 @@ const addForm = document.querySelector('.add-form');
 
 let comments = [];
 
-fetch("https://wedev-api.sky.pro/api/v1/alexandrova-julia/comments", {
-  method: "GET"
-})
-  .then((response) => {
-    if (response.status === 500) {
-      throw new Error("Сервер сломался");
-    }
-    return response.json();
-  })
+getComments()
   .then((responseData) => {
     comments = responseData.comments.map((comment) => {
       return {
@@ -107,14 +100,7 @@ buttonWrite.addEventListener("click", () => {
   buttonWrite.disabled = true;
   buttonWrite.textContent = "Комментарий добавляется...";
 
-  fetch("https://wedev-api.sky.pro/api/v1/alexandrova-julia/comments", {
-    method: "POST",
-    body: JSON.stringify({
-      name: inputName.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-      text: inputText.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-      forceError: true,
-    }),
-  })
+  postComments({ inputName, inputText })
     .then((response) => {
       if (response.status === 400 && (nameValue.length < 3 || textValue.length < 3)) {
         throw new Error("Некорректный запрос");
@@ -126,10 +112,8 @@ buttonWrite.addEventListener("click", () => {
         return response.json();
       }
     })
-    .then((responseData) => {
-      return fetch("https://wedev-api.sky.pro/api/v1/alexandrova-julia/comments", {
-        method: "GET",
-      });
+    .then(() => {
+      getComments()
     })
     .then((response) => {
       return response.json();
@@ -146,7 +130,7 @@ buttonWrite.addEventListener("click", () => {
       });
       renderComments();
     })
-    .then((data) => {
+    .then(() => {
       buttonWrite.disabled = false;
       buttonWrite.textContent = "Написать";
       inputName.value = "";
