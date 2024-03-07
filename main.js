@@ -1,5 +1,6 @@
 import { sanitizeHtml } from './sanitizeHtml.js';
 import { getComments } from './api.js';
+import { postComments } from './api.js';
 
 const inputName = document.querySelector('.add-form-name');
 const inputText = document.querySelector('.add-form-text');
