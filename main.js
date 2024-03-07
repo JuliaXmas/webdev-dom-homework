@@ -41,10 +41,6 @@ fetch("https://wedev-api.sky.pro/api/v1/alexandrova-julia/comments", {
     }
   });
 
-const sanitizeHtml = (htmlString) => {
-  return htmlString.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-}
-
 const initLikesListeners = () => {
   const likeButtonsElements = document.querySelectorAll(".like-button");
 
