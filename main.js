@@ -1,5 +1,5 @@
 import { sanitizeHtml } from './sanitizeHtml.js';
-import { getComments } from './api.js';
+import { getComments, postComments } from './api.js';
 
 const inputName = document.querySelector('.add-form-name');
 const inputText = document.querySelector('.add-form-text');
@@ -9,31 +9,31 @@ const preloader = document.querySelector('.preloader');
 const addForm = document.querySelector('.add-form');
 let comments = [];
 
-
-getComments()
-  .then((responseData) => {
-    comments = responseData.comments.map((comment) => {
-      return {
-        name: comment.author.name,
-        date: new Date(comment.date).toLocaleDateString() + " " + (new Date(comment.date).getHours() < 10 ? '0' + new Date(comment.date).getHours() : new Date(comment.date).getHours()) + ":" + (new Date(comment.date).getMinutes() < 10 ? '0' + new Date(comment.date).getMinutes() : new Date(comment.date).getMinutes()) + ":" + (new Date(comment.date).getSeconds() < 10 ? '0' + new Date(comment.date).getSeconds() : new Date(comment.date).getSeconds()),
-        isLiked: false,
-        likes: comment.likes,
-        text: comment.text,
-        forceError: true,
-      };
-    });
-    renderComments();
-    preloader.classList.add('hide');
-  })
-  .catch((error) => {
-    if (error instanceof TypeError) {
+const fetchAndRenderTasks = () => {
+  getComments()
+    .then((responseData) => {
+      comments = responseData.comments.map((comment) => {
+        return {
+          name: comment.author.name,
+          date: new Date(comment.date).toLocaleDateString() + " " + (new Date(comment.date).getHours() < 10 ? '0' + new Date(comment.date).getHours() : new Date(comment.date).getHours()) + ":" + (new Date(comment.date).getMinutes() < 10 ? '0' + new Date(comment.date).getMinutes() : new Date(comment.date).getMinutes()) + ":" + (new Date(comment.date).getSeconds() < 10 ? '0' + new Date(comment.date).getSeconds() : new Date(comment.date).getSeconds()),
+          isLiked: false,
+          likes: comment.likes,
+          text: comment.text,
+          forceError: true,
+        };
+      });
+      renderComments();
       preloader.classList.add('hide');
-      addForm.textContent = "Не удалось загрузить комментарии";
-      alert("Кажется, у вас сломался Интернет, попробуйте позже");
-      return;
-    }
-  });
-
+    })
+    .catch((error) => {
+      if (error instanceof TypeError) {
+        preloader.classList.add('hide');
+        addForm.textContent = "Не удалось загрузить комментарии";
+        alert("Кажется, у вас сломался Интернет, попробуйте позже");
+        return;
+      }
+    });
+};
 
 const initLikesListeners = () => {
   const likeButtonsElements = document.querySelectorAll(".like-button");
@@ -56,6 +56,7 @@ const initLikesListeners = () => {
     });
   }
 };
+
 const renderComments = () => {
   commentList.innerHTML = comments.map((comment, index) => {
     return `<li class="comment" data-index="${index}">
@@ -78,7 +79,10 @@ const renderComments = () => {
   }).join("");
   initLikesListeners();
 }
+
+fetchAndRenderTasks();
 renderComments();
+
 buttonWrite.addEventListener("click", () => {
   inputName.classList.remove("error");
   inputText.classList.remove("error");
@@ -89,17 +93,15 @@ buttonWrite.addEventListener("click", () => {
     inputText.classList.add("error");
     return;
   };
+
   const nameValue = inputName.value;
   const textValue = inputText.value;
   buttonWrite.disabled = true;
   buttonWrite.textContent = "Комментарий добавляется...";
-  fetch("https://wedev-api.sky.pro/api/v1/alexandrova-julia/comments", {
-    method: "POST",
-    body: JSON.stringify({
-      name: inputName.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-      text: inputText.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-      forceError: true,
-    }),
+
+  postComments({
+    name: inputName.value,
+    text: inputText.value,
   })
     .then((response) => {
       if (response.status === 400 && (nameValue.length < 3 || textValue.length < 3)) {
@@ -108,17 +110,10 @@ buttonWrite.addEventListener("click", () => {
       if (response.status === 500) {
         throw new Error("Сервер сломался");
       }
-      else {
-        return response.json();
-      }
+      return response.json();
     })
     .then((responseData) => {
-      return fetch("https://wedev-api.sky.pro/api/v1/alexandrova-julia/comments", {
-        method: "GET",
-      });
-    })
-    .then((response) => {
-      return response.json();
+      return fetchAndRenderTasks();
     })
     .then((responseData) => {
       comments = responseData.comments.map((comment) => {
@@ -132,7 +127,7 @@ buttonWrite.addEventListener("click", () => {
       });
       renderComments();
     })
-    .then((data) => {
+    .then(() => {
       buttonWrite.disabled = false;
       buttonWrite.textContent = "Написать";
       inputName.value = "";
@@ -161,4 +156,5 @@ buttonWrite.addEventListener("click", () => {
     });
   renderComments();
 });
+
 console.log("It works!");
