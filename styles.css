@@ -2,6 +2,14 @@ body {
     margin: 0;
   }
 
+  .error {
+    background-color: red;
+  }
+
+  .hide {
+    display: none;
+  }
+
 .preloader{
   position: absolute;
   left: 0;
