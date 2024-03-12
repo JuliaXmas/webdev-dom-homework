@@ -36,13 +36,9 @@ const fetchAndRenderTasks = () => {
     });
 };
 
-fetchAndRenderTasks();
-
-
-
-renderComments({ comments });
 
 fetchAndRenderTasks();
+
 renderComments({ comments });
 
 buttonWrite.addEventListener("click", () => {
