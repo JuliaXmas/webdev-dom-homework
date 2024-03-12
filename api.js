@@ -16,8 +16,8 @@ export function postComments({ name, text }) {
         body: JSON.stringify({
             name: name.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
             text: text.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-            //forceError: true,
+            forceError: true,
         }),
     })
-        
+
 }

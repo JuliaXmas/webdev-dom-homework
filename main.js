@@ -7,6 +7,7 @@ const buttonWrite = document.querySelector('.add-form-button');
 const commentList = document.querySelector('.comments');
 const preloader = document.querySelector('.preloader');
 const addForm = document.querySelector('.add-form');
+
 let comments = [];
 
 const fetchAndRenderTasks = () => {
@@ -29,11 +30,13 @@ const fetchAndRenderTasks = () => {
       if (error instanceof TypeError) {
         preloader.classList.add('hide');
         addForm.textContent = "Не удалось загрузить комментарии";
-        alert("Кажется, у вас сломался Интернет, попробуйте позже");
         return;
       }
+      alert("Кажется, у вас сломался Интернет, попробуйте позже");
     });
 };
+
+fetchAndRenderTasks();
 
 const initLikesListeners = () => {
   const likeButtonsElements = document.querySelectorAll(".like-button");
@@ -106,26 +109,13 @@ buttonWrite.addEventListener("click", () => {
     .then((response) => {
       if (response.status === 400 && (nameValue.length < 3 || textValue.length < 3)) {
         throw new Error("Некорректный запрос");
-      }
-      if (response.status === 500) {
+      } else if (response.status === 500) {
         throw new Error("Сервер сломался");
       }
       return response.json();
     })
-    .then((responseData) => {
+    .then(() => {
       return fetchAndRenderTasks();
-    })
-    .then((responseData) => {
-      comments = responseData.comments.map((comment) => {
-        return {
-          name: comment.author.name,
-          date: new Date(comment.date).toLocaleDateString() + " " + (new Date(comment.date).getHours() < 10 ? '0' + new Date(comment.date).getHours() : new Date(comment.date).getHours()) + ":" + (new Date(comment.date).getMinutes() < 10 ? '0' + new Date(comment.date).getMinutes() : new Date(comment.date).getMinutes()) + ":" + (new Date(comment.date).getSeconds() < 10 ? '0' + new Date(comment.date).getSeconds() : new Date(comment.date).getSeconds()),
-          isLiked: comment.isLiked,
-          likes: comment.likes,
-          text: comment.text,
-        };
-      });
-      renderComments();
     })
     .then(() => {
       buttonWrite.disabled = false;
@@ -143,6 +133,7 @@ buttonWrite.addEventListener("click", () => {
         alert("Имя и комментарий должны быть не короче 3 символов");
         inputName.value = nameValue;
         inputText.value = textValue;
+        return;
       }
       if (error instanceof TypeError) {
         alert("Кажется, у вас сломался интернет, попробуйте позже");
@@ -156,5 +147,7 @@ buttonWrite.addEventListener("click", () => {
     });
   renderComments();
 });
+
+renderComments();
 
 console.log("It works!");
