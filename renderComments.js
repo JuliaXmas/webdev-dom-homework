@@ -39,10 +39,4 @@ const initLikesListeners = ({ comments }, { renderComments }) => {
       renderComments({ comments });
     });
   }
-  for (const comment of document.querySelectorAll(".comment")) {
-    comment.addEventListener("click", () => {
-      const currentPost = comments[comment.dataset.index];
-      inputText.value = `%BEGIN_QUOTE${currentPost.name} : ${currentPost.text}END_QUOTE%`;
-    });
-  }
 };

@@ -36,10 +36,18 @@ const fetchAndRenderTasks = () => {
     });
 };
 
-
 fetchAndRenderTasks();
 
 renderComments({ comments });
+
+const quoteComments = ({ comments }) => {
+  for (const comment of document.querySelectorAll(".comment")) {
+    comment.addEventListener("click", () => {
+      const currentPost = comments[comment.dataset.index];
+      inputText.value = `%BEGIN_QUOTE${currentPost.name} : ${currentPost.text}END_QUOTE%`;
+    });
+  }
+};
 
 buttonWrite.addEventListener("click", () => {
   inputName.classList.remove("error");
@@ -104,5 +112,6 @@ buttonWrite.addEventListener("click", () => {
 });
 
 renderComments({ comments });
+quoteComments({ comments });
 
 console.log("It works!");
