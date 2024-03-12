@@ -1,10 +1,10 @@
-import { sanitizeHtml } from './sanitizeHtml.js';
+
 import { getComments, postComments } from './api.js';
+import { renderComments } from './renderComments.js';
 
 const inputName = document.querySelector('.add-form-name');
 const inputText = document.querySelector('.add-form-text');
 const buttonWrite = document.querySelector('.add-form-button');
-const commentList = document.querySelector('.comments');
 const preloader = document.querySelector('.preloader');
 const addForm = document.querySelector('.add-form');
 
@@ -23,7 +23,7 @@ const fetchAndRenderTasks = () => {
           forceError: true,
         };
       });
-      renderComments();
+      renderComments({ comments });
       preloader.classList.add('hide');
     })
     .catch((error) => {
@@ -38,53 +38,12 @@ const fetchAndRenderTasks = () => {
 
 fetchAndRenderTasks();
 
-const initLikesListeners = () => {
-  const likeButtonsElements = document.querySelectorAll(".like-button");
-  for (const likeButtonElement of likeButtonsElements) {
-    likeButtonElement.addEventListener("click", (event) => {
-      event.stopPropagation();
-      const index = likeButtonElement.dataset.index;
-      const comment = comments[index];
-      comment.likes = comment.isLiked
-        ? comment.likes - 1
-        : comment.likes + 1;
-      comment.isLiked = !comment.isLiked;
-      renderComments();
-    });
-  }
-  for (const comment of document.querySelectorAll(".comment")) {
-    comment.addEventListener("click", () => {
-      const currentPost = comments[comment.dataset.index];
-      inputText.value = `%BEGIN_QUOTE${currentPost.name} : ${currentPost.text}END_QUOTE%`;
-    });
-  }
-};
 
-const renderComments = () => {
-  commentList.innerHTML = comments.map((comment, index) => {
-    return `<li class="comment" data-index="${index}">
-    <div class="comment-header">
-      <div>${sanitizeHtml(comment.name)}</div>
-      <div>${comment.date},</div>
-    </div>
-      <div class="comment-body">
-      <div class="comment-text">
-      ${sanitizeHtml(comment.text).replaceAll("%BEGIN_QUOTE", "<div class='quote'>").replaceAll("END_QUOTE%", "</div>")}
-      </div>
-    </div>
-    <div class="comment-footer">
-      <div class="likes">
-        <span class="likes-counter">${comment.likes}</span>
-        <button data-index="${index}" class="like-button ${comment.isLiked ? "-active-like" : ""}"></button>
-      </div>
-    </div>
-      </li>`
-  }).join("");
-  initLikesListeners();
-}
+
+renderComments({ comments });
 
 fetchAndRenderTasks();
-renderComments();
+renderComments({ comments });
 
 buttonWrite.addEventListener("click", () => {
   inputName.classList.remove("error");
@@ -145,9 +104,9 @@ buttonWrite.addEventListener("click", () => {
       buttonWrite.disabled = false;
       buttonWrite.textContent = "Написать";
     });
-  renderComments();
+  renderComments({ comments });
 });
 
-renderComments();
+renderComments({ comments });
 
 console.log("It works!");

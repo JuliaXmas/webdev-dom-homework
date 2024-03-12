@@ -19,5 +19,4 @@ export function postComments({ name, text }) {
             forceError: true,
         }),
     })
-
 }
