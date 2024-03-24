@@ -178,54 +178,6 @@ body {
 
   .add-form-button:hover {
     opacity: 0.9;
-
-body {
-    margin: 0;
-  }
-
-  .preloader{
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(42, 41, 41);
-    z-index: 3;
-  }
-
-  .preloader__loader{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .spinner {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: radial-gradient(farthest-side,#474bff 94%,#0000) top/9px 9px no-repeat,
-           conic-gradient(#0000 30%,#474bff);
-    -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 9px),#000 0);
-    animation: spinner-c7wet2 1s infinite linear;
- }
- 
- @keyframes spinner-c7wet2 {
-    100% {
-       transform: rotate(1turn);
-    }
- }
-
-  .container {
-    font-family: Helvetica;
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 80px;
-    padding-bottom: 200px;
-    background: #202020;
-    min-height: 100vh;
   }
 
   .comments,
@@ -320,9 +272,28 @@ body {
     border: none;
   }
 
+  .add-form-login,
+  .add-form-password {
+    font-size: 16px;
+    font-family: Helvetica;
+    border-radius: 8px;
+    border: none;
+  }
+
   .add-form-name {
     width: 300px;
     padding: 11px 22px;
+  }
+
+  .add-form-login {
+    height: 18px;
+    padding: 11px 22px;
+  }
+
+  .add-form-password {
+    height: 18px;
+    padding: 11px 22px;
+    margin-top: 10px;
   }
 
   .add-form-text {
@@ -344,9 +315,13 @@ body {
     border: none;
     border-radius: 18px;
     cursor: pointer;
+    margin-right: 10px;
   }
 
   .add-form-button:hover {
     opacity: 0.9;
   }
-}
+
+  .auth-form{
+    margin:20px;
+  }
