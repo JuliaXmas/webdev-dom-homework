@@ -44,7 +44,22 @@ export function login({ login, password }) {
             login,
             password,
         }),
-    }).then((response) => {
-        return response.json();
-    });
-}
+    })
+        .then((response) => {
+            if (response.status === 201) {
+                console.log("комменты отрисовались?");
+                return response.json();
+            }
+            if (response.status === 400) {
+                throw new Error("Некорректные логинпароль 400");
+            }
+            if (response.status === 500) {
+                return Promise.reject("ошибка сервера");
+            }
+            return Promise.reject("Отсутствует соединение");
+        })
+        .catch((error) => {
+            alert(error);
+            console.warn(error);
+        })
+};

@@ -19,7 +19,10 @@ export const renderLogin = () => {
   const passwordInputElement = document.getElementById("password");
 
   buttonElement.addEventListener("click", () => {
-
+    if (!loginInputElement.value || !passwordInputElement.value) {
+      alert("Логин или пароль введены некорректно");
+      return;
+    }
     login({
       login: loginInputElement.value,
       password: passwordInputElement.value,
