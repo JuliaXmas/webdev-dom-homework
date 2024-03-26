@@ -1,16 +1,27 @@
 
 import { getComments, postComments } from './api.js';
+import { renderApp } from './renderApp.js';
 import { renderComments } from './renderComments.js';
 
-const inputName = document.querySelector('.add-form-name');
-const inputText = document.querySelector('.add-form-text');
-const buttonWrite = document.querySelector('.add-form-button');
+
+
+
 const preloader = document.querySelector('.preloader');
-const addForm = document.querySelector('.add-form');
+
 
 let comments = [];
+export let isAuth = false;
+export let name = null;
 
-const fetchAndRenderTasks = () => {
+export const setAuth = (value) => {
+  isAuth = value;
+}
+
+export const setName = (newName) => {
+  name = newName;
+}
+
+export const fetchAndRenderTasks = () => {
   getComments()
     .then((responseData) => {
       comments = responseData.comments.map((comment) => {
@@ -36,71 +47,71 @@ const fetchAndRenderTasks = () => {
     });
 };
 
-fetchAndRenderTasks();
+renderApp();
 
-renderComments({ comments });
+export const initButtonListeners = () => {
+  const buttonWrite = document.querySelector('.add-form-button');
+  const inputName = document.querySelector('.add-form-name');
+  const inputText = document.querySelector('.add-form-text');
+  buttonWrite.addEventListener("click", () => {
+    inputName.classList.remove("error");
+    inputText.classList.remove("error");
+    if (inputName.value.trim() === "" || inputName.value === null) {
+      inputName.classList.add("error");
+      return;
+    } else if (inputText.value.trim() === "" || inputText.value === null) {
+      inputText.classList.add("error");
+      return;
+    };
 
-buttonWrite.addEventListener("click", () => {
-  inputName.classList.remove("error");
-  inputText.classList.remove("error");
-  if (inputName.value.trim() === "" || inputName.value === null) {
-    inputName.classList.add("error");
-    return;
-  } else if (inputText.value.trim() === "" || inputText.value === null) {
-    inputText.classList.add("error");
-    return;
-  };
+    const nameValue = inputName.value;
+    const textValue = inputText.value;
+    buttonWrite.disabled = true;
+    buttonWrite.textContent = "Комментарий добавляется...";
 
-  const nameValue = inputName.value;
-  const textValue = inputText.value;
-  buttonWrite.disabled = true;
-  buttonWrite.textContent = "Комментарий добавляется...";
-
-  postComments({
-    name: inputName.value,
-    text: inputText.value,
-  })
-    .then((response) => {
-      if (response.status === 400 && (nameValue.length < 3 || textValue.length < 3)) {
-        throw new Error("Некорректный запрос");
-      } else if (response.status === 500) {
-        throw new Error("Сервер сломался");
-      }
-      return response.json();
+    postComments({
+      name: inputName.value,
+      text: inputText.value,
     })
-    .then(() => {
-      return fetchAndRenderTasks();
-    })
-    .then(() => {
-      buttonWrite.disabled = false;
-      buttonWrite.textContent = "Написать";
-      inputName.value = "";
-      inputText.value = "";
-    })
-    .catch((error) => {
-      if (error.message === "Сервер сломался") {
-        alert("Сервер сломался, попробуй позже");
-        inputName.value = nameValue;
-        inputText.value = textValue;
-        return;
-      } if (error.message === "Некорректный запрос") {
-        alert("Имя и комментарий должны быть не короче 3 символов");
-        inputName.value = nameValue;
-        inputText.value = textValue;
-        return;
-      }
-      if (error instanceof TypeError) {
-        alert("Кажется, у вас сломался интернет, попробуйте позже");
-        return;
-      }
-      console.log(error);
-    })
-    .finally(() => {
-      buttonWrite.disabled = false;
-      buttonWrite.textContent = "Написать";
-    });
-  renderComments({ comments });
-});
+      .then((response) => {
+        if (response.status === 400 && (nameValue.length < 3 || textValue.length < 3)) {
+          throw new Error("Некорректный запрос");
+        } else if (response.status === 500) {
+          throw new Error("Сервер сломался");
+        }
+        return response.json();
+      })
+      .then(() => {
+        return fetchAndRenderTasks();
+      })
+      .then(() => {
+        buttonWrite.disabled = false;
+        buttonWrite.textContent = "Написать";
+        inputText.value = "";
+      })
+      .catch((error) => {
+        if (error.message === "Сервер сломался") {
+          alert("Сервер сломался, попробуй позже");
+          inputText.value = textValue;
+          return;
+        } if (error.message === "Некорректный запрос") {
+          alert("Имя и комментарий должны быть не короче 3 символов");
+          inputText.value = textValue;
+          return;
+        }
+        if (error instanceof TypeError) {
+          alert("Кажется, у вас сломался интернет, попробуйте позже");
+          return;
+        }
+        console.log(error);
+      })
+      .finally(() => {
+        buttonWrite.disabled = false;
+        buttonWrite.textContent = "Написать";
+      });
+    renderComments({ comments });
+  });
+};
 
 renderComments({ comments });
 

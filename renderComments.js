@@ -1,8 +1,9 @@
 import { sanitizeHtml } from './sanitizeHtml.js';
 
-const commentList = document.querySelector('.comments');
+
 
 export const renderComments = ({ comments }) => {
+  const commentList = document.querySelector('.comments');
   commentList.innerHTML = comments.map((comment, index) => {
     return `<li class="comment" data-index="${index}">
       <div class="comment-header">
@@ -22,9 +23,12 @@ export const renderComments = ({ comments }) => {
       </div>
         </li>`
   }).join("");
+
   initLikesListeners({ comments }, { renderComments });
   quoteComments({ comments }, { renderComments });
 }
+
+
 
 const initLikesListeners = ({ comments }, { renderComments }) => {
   const likeButtonsElements = document.querySelectorAll(".like-button");
