@@ -47,19 +47,30 @@ export function login({ login, password }) {
     })
         .then((response) => {
             if (response.status === 201) {
-                console.log("комменты отрисовались?");
                 return response.json();
             }
             if (response.status === 400) {
-                throw new Error("Некорректные логинпароль 400");
+                throw new Error("Некорректные логин или пароль");
             }
             if (response.status === 500) {
-                return Promise.reject("ошибка сервера");
+                return Promise.reject("Ошибка сервера");
             }
             return Promise.reject("Отсутствует соединение");
         })
         .catch((error) => {
-            alert(error);
-            console.warn(error);
+            if (error.message === "Ошибка сервера") {
+                alert("Сервер сломался, попробуй позже");
+                inputText.value = textValue;
+                return;
+            } if (error.message === "Некорректные логин или пароль") {
+                alert("Логин или пароль введены некорректно");
+                inputText.value = textValue;
+                return;
+            }
+            if (error instanceof TypeError) {
+                alert("Кажется, у вас сломался интернет, попробуйте позже");
+                return;
+            }
+            console.log(error);
         })
 };
