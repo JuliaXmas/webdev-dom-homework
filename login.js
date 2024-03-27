@@ -6,8 +6,8 @@ export const renderLogin = () => {
   const appElement = document.querySelector(".container");
   const loginHtml = `<div class="add-form">
     <input type="text" class="add-form-login" id="login" placeholder="Введите ваш логин" value="" />
-    <textarea type="textarea" class="add-form-password" id="password" placeholder="Введите ваш пароль"
-      value=""></textarea>
+    <input type="password" class="add-form-password" id="password" placeholder="Введите ваш пароль"
+      value=""></input>
     <div class="add-form-row">
       <button class="add-form-button" id="login-button">Войти</button>
     </div>

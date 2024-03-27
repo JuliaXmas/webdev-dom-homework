@@ -60,11 +60,9 @@ export function login({ login, password }) {
         .catch((error) => {
             if (error.message === "Ошибка сервера") {
                 alert("Сервер сломался, попробуй позже");
-                inputText.value = textValue;
                 return;
             } if (error.message === "Некорректные логин или пароль") {
                 alert("Логин или пароль введены некорректно");
-                inputText.value = textValue;
                 return;
             }
             if (error instanceof TypeError) {

@@ -10,8 +10,8 @@ export const renderForm = ({ container }) => {
 <div class="add-form-row">
   <button class="add-form-button">Написать</button>
 </div>
-</div>`: `<div class="auth-form" id="auth-message">Чтобы добавить комментарий, <span id="login-link">авторизуйтесь</span>...
-</div>`
+</div>`: `<div class="add-form-auth"><div class="auth-form" id="auth-message"><p>Чтобы добавить комментарий, <a class ="login-link" id="login-link">авторизуйтесь</a>...</p>
+</div></div>`
 
     const authLink = document.querySelector('#login-link');
     if (authLink) {
