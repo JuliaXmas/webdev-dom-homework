@@ -55,7 +55,6 @@ export function login({ login, password }) {
             if (response.status === 500) {
                 return Promise.reject("Ошибка сервера");
             }
-            return Promise.reject("Отсутствует соединение");
         })
         .catch((error) => {
             if (error.message === "Failed to fetch") {
