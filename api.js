@@ -46,7 +46,7 @@ export function login({ login, password }) {
         }),
     })
         .then((response) => {
-            if (response.status === 201) {
+            if (response.ok) {
                 return response.json();
             }
             if (response.status === 400) {
@@ -58,17 +58,10 @@ export function login({ login, password }) {
             return Promise.reject("Отсутствует соединение");
         })
         .catch((error) => {
-            if (error.message === "Ошибка сервера") {
-                alert("Сервер сломался, попробуй позже");
-                return;
-            } if (error.message === "Некорректные логин или пароль") {
-                alert("Логин или пароль введены некорректно");
-                return;
+            if (error.message === "Failed to fetch") {
+                throw new Error("Отсутствует Интернет-соединение");
+            } else {
+                throw error;
             }
-            if (error instanceof TypeError) {
-                alert("Кажется, у вас сломался интернет, попробуйте позже");
-                return;
-            }
-            console.log(error);
         })
 };

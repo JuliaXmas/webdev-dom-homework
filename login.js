@@ -33,5 +33,8 @@ export const renderLogin = () => {
       setName(responseData.user.name);
       renderApp();
     })
+      .catch((error) => {
+        alert(error.message);
+      })
   })
 };
