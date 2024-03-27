@@ -2,6 +2,7 @@
 import { getComments, postComments } from './api.js';
 import { renderApp } from './renderApp.js';
 import { renderComments } from './renderComments.js';
+import { format } from "date-fns";
 
 const preloader = document.querySelector('.preloader');
 
@@ -21,9 +22,10 @@ export const fetchAndRenderTasks = () => {
   getComments()
     .then((responseData) => {
       comments = responseData.comments.map((comment) => {
+        const createDate = format(new Date(), 'yyyy-MM-dd hh.mm.ss');
         return {
           name: comment.author.name,
-          date: new Date(comment.date).toLocaleDateString() + " " + (new Date(comment.date).getHours() < 10 ? '0' + new Date(comment.date).getHours() : new Date(comment.date).getHours()) + ":" + (new Date(comment.date).getMinutes() < 10 ? '0' + new Date(comment.date).getMinutes() : new Date(comment.date).getMinutes()) + ":" + (new Date(comment.date).getSeconds() < 10 ? '0' + new Date(comment.date).getSeconds() : new Date(comment.date).getSeconds()),
+          date: createDate,
           isLiked: false,
           likes: comment.likes,
           text: comment.text,
