@@ -3,11 +3,7 @@ import { getComments, postComments } from './api.js';
 import { renderApp } from './renderApp.js';
 import { renderComments } from './renderComments.js';
 
-
-
-
 const preloader = document.querySelector('.preloader');
-
 
 let comments = [];
 export let isAuth = false;
