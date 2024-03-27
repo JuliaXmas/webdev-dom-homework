@@ -1,6 +1,7 @@
 import { login, setToken } from "./api.js";
-import { setAuth, setName } from "./main.js";
+import { name, setAuth, setName } from "./main.js";
 import { renderApp } from "./renderApp.js";
+import _ from 'lodash';
 
 export const renderLogin = () => {
   const appElement = document.querySelector(".container");
@@ -27,6 +28,7 @@ export const renderLogin = () => {
       login: loginInputElement.value,
       password: passwordInputElement.value,
       forceError: true,
+      name: _.capitalize(name),
     }).then((responseData) => {
       setToken(responseData.user.token);
       setAuth(true);
