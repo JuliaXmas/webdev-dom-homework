@@ -2,7 +2,7 @@ const commentsURL =
     'https://wedev-api.sky.pro/api/v2/alexandrova-julia/comments';
 const userURL = 'https://wedev-api.sky.pro/api/user/login';
 
-export let token;
+export let token = null;
 
 export const setToken = (newToken) => {
     token = newToken;

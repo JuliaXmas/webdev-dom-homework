@@ -1,5 +1,16 @@
 import { sanitizeHtml } from './sanitizeHtml.js';
 
+export let isAuth = false;
+export let name = null;
+
+export const setAuth = (value) => {
+    isAuth = value;
+};
+
+export const setName = (newName) => {
+    name = newName;
+};
+
 export const renderComments = ({ comments }) => {
     const commentList = document.querySelector('.comments');
     commentList.innerHTML = comments
@@ -33,13 +44,18 @@ const initLikesListeners = ({ comments }, { renderComments }) => {
     for (const likeButtonElement of likeButtonsElements) {
         likeButtonElement.addEventListener('click', (event) => {
             event.stopPropagation();
-            const index = likeButtonElement.dataset.index;
-            const comment = comments[index];
-            comment.likes = comment.isLiked
-                ? comment.likes - 1
-                : comment.likes + 1;
-            comment.isLiked = !comment.isLiked;
-            renderComments({ comments });
+            if (isAuth === true) {
+                const index = likeButtonElement.dataset.index;
+                const comment = comments[index];
+                comment.likes = comment.isLiked
+                    ? comment.likes - 1
+                    : comment.likes + 1;
+                comment.isLiked = !comment.isLiked;
+                renderComments({ comments });
+            } else {
+                alert('Пожалуйста, зарегестрируйтесь или войдите в аккаунт');
+                return;
+            }
         });
     }
 };
@@ -48,8 +64,13 @@ const quoteComments = ({ comments }) => {
     const inputText = document.querySelector('.add-form-text');
     for (const comment of document.querySelectorAll('.comment')) {
         comment.addEventListener('click', () => {
-            const currentPost = comments[comment.dataset.index];
-            inputText.value = `%BEGIN_QUOTE${currentPost.name} : ${currentPost.text}END_QUOTE%`;
+            if (isAuth === true) {
+                const currentPost = comments[comment.dataset.index];
+                inputText.value = `%BEGIN_QUOTE${currentPost.name} : ${currentPost.text}END_QUOTE%`;
+            } else {
+                alert('Пожалуйста, зарегестрируйтесь или войдите в аккаунт');
+                return;
+            }
         });
     }
 };
