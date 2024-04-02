@@ -40,35 +40,36 @@ export const renderComments = ({ comments }) => {
 };
 
 const initLikesListeners = ({ comments }, { renderComments }) => {
-    const likeButtonsElements = document.querySelectorAll('.like-button');
-    for (const likeButtonElement of likeButtonsElements) {
-        likeButtonElement.addEventListener('click', (event) => {
-            event.stopPropagation();
-            if (isAuth === false) {
-                alert('Пожалуйста, зарегестрируйтесь или войдите в аккаунт');
-                return;
-            }
-            const index = likeButtonElement.dataset.index;
-            const comment = comments[index];
-            comment.likes = comment.isLiked
-                ? comment.likes - 1
-                : comment.likes + 1;
-            comment.isLiked = !comment.isLiked;
-            renderComments({ comments });
-        });
+    if (isAuth === true) {
+        const likeButtonsElements = document.querySelectorAll('.like-button');
+        for (const likeButtonElement of likeButtonsElements) {
+            likeButtonElement.addEventListener('click', (event) => {
+                event.stopPropagation();
+
+                const index = likeButtonElement.dataset.index;
+                const comment = comments[index];
+                comment.likes = comment.isLiked
+                    ? comment.likes - 1
+                    : comment.likes + 1;
+                comment.isLiked = !comment.isLiked;
+                renderComments({ comments });
+            });
+        }
     }
+    alert('Пожалуйста, зарегестрируйтесь или войдите в аккаунт');
+    return;
 };
 
 const quoteComments = ({ comments }) => {
-    const inputText = document.querySelector('.add-form-text');
-    for (const comment of document.querySelectorAll('.comment')) {
-        comment.addEventListener('click', () => {
-            if (isAuth === false) {
-                alert('Пожалуйста, зарегестрируйтесь или войдите в аккаунт');
-                return;
-            }
-            const currentPost = comments[comment.dataset.index];
-            inputText.value = `%BEGIN_QUOTE${currentPost.name} : ${currentPost.text}END_QUOTE%`;
-        });
+    if (isAuth === true) {
+        const inputText = document.querySelector('.add-form-text');
+        for (const comment of document.querySelectorAll('.comment')) {
+            comment.addEventListener('click', () => {
+                const currentPost = comments[comment.dataset.index];
+                inputText.value = `%BEGIN_QUOTE${currentPost.name} : ${currentPost.text}END_QUOTE%`;
+            });
+        }
     }
+    alert('Пожалуйста, зарегестрируйтесь или войдите в аккаунт');
+    return;
 };
