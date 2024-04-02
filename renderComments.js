@@ -44,18 +44,17 @@ const initLikesListeners = ({ comments }, { renderComments }) => {
     for (const likeButtonElement of likeButtonsElements) {
         likeButtonElement.addEventListener('click', (event) => {
             event.stopPropagation();
-            if (isAuth === true) {
-                const index = likeButtonElement.dataset.index;
-                const comment = comments[index];
-                comment.likes = comment.isLiked
-                    ? comment.likes - 1
-                    : comment.likes + 1;
-                comment.isLiked = !comment.isLiked;
-                renderComments({ comments });
-            } else {
+            if (isAuth === false) {
                 alert('Пожалуйста, зарегестрируйтесь или войдите в аккаунт');
                 return;
             }
+            const index = likeButtonElement.dataset.index;
+            const comment = comments[index];
+            comment.likes = comment.isLiked
+                ? comment.likes - 1
+                : comment.likes + 1;
+            comment.isLiked = !comment.isLiked;
+            renderComments({ comments });
         });
     }
 };
@@ -64,13 +63,12 @@ const quoteComments = ({ comments }) => {
     const inputText = document.querySelector('.add-form-text');
     for (const comment of document.querySelectorAll('.comment')) {
         comment.addEventListener('click', () => {
-            if (isAuth === true) {
-                const currentPost = comments[comment.dataset.index];
-                inputText.value = `%BEGIN_QUOTE${currentPost.name} : ${currentPost.text}END_QUOTE%`;
-            } else {
+            if (isAuth === false) {
                 alert('Пожалуйста, зарегестрируйтесь или войдите в аккаунт');
                 return;
             }
+            const currentPost = comments[comment.dataset.index];
+            inputText.value = `%BEGIN_QUOTE${currentPost.name} : ${currentPost.text}END_QUOTE%`;
         });
     }
 };

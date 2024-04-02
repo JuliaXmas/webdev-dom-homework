@@ -1,5 +1,5 @@
 import { login, setToken } from './api.js';
-import { name, setAuth, setName } from './main.js';
+import { name, setAuth, setName } from './renderComments.js';
 import { renderApp } from './renderApp.js';
 import _ from 'lodash';
 

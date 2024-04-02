@@ -1,8 +1,8 @@
 import { renderLogin } from './login.js';
-import { isAuth, name } from './renderComments.js';
+import { name, isAuth } from './renderComments.js';
 import { renderComments } from './renderComments.js';
 import { postComments } from './api.js';
-import { fetchAndRenderTasks } from './renderApp.js';
+import { renderApp } from './renderApp.js';
 
 let comments = [];
 
@@ -64,7 +64,7 @@ export const renderForm = ({ container }) => {
                         return response.json();
                     })
                     .then(() => {
-                        return fetchAndRenderTasks();
+                        return renderApp();
                     })
                     .then(() => {
                         buttonWrite.disabled = false;
