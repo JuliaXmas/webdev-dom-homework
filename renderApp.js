@@ -7,7 +7,7 @@ let comments = [];
 
 export const renderApp = () => {
     let container = document.querySelector('.container');
-    container.innerHTML = `<ul class="comments">
+    container.innerHTML = `<ul class="posts">
  </ul>
  <div id="form"></div>`;
     renderForm({ container: document.querySelector('#form') });
