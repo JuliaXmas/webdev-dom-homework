@@ -1,65 +1,126 @@
-const commentsURL =
-    'https://wedev-api.sky.pro/api/v2/alexandrova-julia/comments';
-const userURL = 'https://wedev-api.sky.pro/api/user/login';
+const prodKey = 'prod'
+const personalKey = "alexandrovaJulia";
+const baseHost = "https://webdev-hw-api.vercel.app";
+const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
-export let token = null;
+export function getPosts() {
+  return fetch(postsHost, {
+    method: "GET",
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
 
-export const setToken = (newToken) => {
-    token = newToken;
-};
-
-export function getComments() {
-    return fetch(commentsURL, {
-        method: 'GET',
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    }).then((response) => {
-        if (response.status === 500) {
-            throw new Error('Сервер сломался');
-        }
-        return response.json();
-    });
-}
-
-export function postComments({ name, text }) {
-    return fetch(commentsURL, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-            name: name.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
-            text: text.replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
-            forceError: true,
-        }),
-    });
-}
-
-export function login({ login, password }) {
-    return fetch(userURL, {
-        method: 'POST',
-        body: JSON.stringify({
-            login,
-            password,
-        }),
+      return response.json();
     })
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            if (response.status === 400) {
-                throw new Error('Некорректные логин или пароль');
-            }
-            if (response.status === 500) {
-                return Promise.reject('Ошибка сервера');
-            }
-        })
-        .catch((error) => {
-            if (error.message === 'Failed to fetch') {
-                throw new Error('Отсутствует Интернет-соединение');
-            } else {
-                throw error;
-            }
-        });
+    .then((data) => {
+      return data.posts;
+    });
+}
+
+export function getUserPosts({userId}) {
+  return fetch(postsHost + `/user-posts/${userId}` , {
+      method: "GET",
+  }).then((response) => {
+    return response.json();
+  }).then((data) => {
+    return data.posts
+  })
+}
+
+// https://github.com/GlebkaF/webdev-hw-api/blob/main/pages/api/user/README.md#%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D0%B8%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%D1%81%D1%8F
+export function registerUser({ login, password, name, imageUrl }) {
+  return fetch(baseHost + "/api/user", {
+    method: "POST",
+    body: JSON.stringify({
+      login,
+      password,
+      name,
+      imageUrl,
+    }),
+  }).then((response) => {
+    if (response.status === 400) {
+      throw new Error("Такой пользователь уже существует");
+    }
+    return response.json();
+  });
+}
+
+export function loginUser({ login, password }) {
+  return fetch(baseHost + "/api/user/login", {
+    method: "POST",
+    body: JSON.stringify({
+      login,
+      password,
+    }),
+  }).then((response) => {
+    if (response.status === 400) {
+      throw new Error("Неверный логин или пароль");
+    }
+    return response.json();
+  });
+}
+
+// Загружает картинку в облако, возвращает url загруженной картинки
+export function uploadImage({ file }) {
+  const data = new FormData();
+  data.append("file", file);
+
+  return fetch(baseHost + "/api/upload/image", {
+    method: "POST",
+    body: data,
+  }).then((response) => {
+    return response.json();
+  });
+}
+
+export function createPost({ description,imageUrl,token }) {
+  return fetch(postsHost, {
+    method: "POST",
+    body: JSON.stringify({
+      description,
+      imageUrl 
+    }),
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status != 201) {
+      throw new Error("Не удалось создать пост");
+    }
+    return response.json();
+  });
+}
+
+export function addLike({token , postId}) {
+  return fetch(postsHost + `/${postId}/like`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status != 200) {
+      throw new Error("Не удалось поставить лайк");
+    }
+    return response.json();
+  }).catch((e) => {
+    alert(e)
+  });
+}
+
+export function removeLike({token , postId}) {
+  return fetch(postsHost + `/${postId}/dislike`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status != 200) {
+      throw new Error("Не удалось удалить лайк");
+    }
+    return response.json();
+  }).catch((e) => {
+    alert(e)
+  });
 }
